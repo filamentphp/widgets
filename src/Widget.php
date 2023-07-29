@@ -99,4 +99,12 @@ abstract class Widget extends Component
 
         return $properties;
     }
+
+    public function placeholder(): View
+    {
+        return view('filament::components.loading-card', [
+            'columnSpan' => $this->getColumnSpan(),
+            'columnStart' => $this->getColumnStart(),
+        ]);
+    }
 }
