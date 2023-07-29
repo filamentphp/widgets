@@ -14,8 +14,10 @@ export default function chart({ cachedData, options, type }) {
             Alpine.effect(() => {
                 Alpine.store('theme')
 
-                this.getChart().destroy()
-                this.initChart()
+                this.$nextTick(() => {
+                    this.getChart().destroy()
+                    this.initChart()
+                })
             })
 
             window
@@ -35,12 +37,13 @@ export default function chart({ cachedData, options, type }) {
         initChart: function (data = null) {
             Chart.defaults.animation.duration = 0
 
-            const color = getComputedStyle(
-                this.$refs.colorElement,
+            Chart.defaults.backgroundColor = getComputedStyle(
+                this.$refs.backgroundColorElement,
             ).color
 
-            Chart.defaults.backgroundColor = color
-            Chart.defaults.borderColor = color
+            Chart.defaults.borderColor = getComputedStyle(
+                this.$refs.borderColorElement,
+            ).color
 
             Chart.defaults.color = getComputedStyle(
                 this.$refs.textColorElement,
@@ -56,15 +59,18 @@ export default function chart({ cachedData, options, type }) {
             ).color
 
             options ??= {}
+            options.borderWidth ??= 2
+            options.pointHitRadius ??= 4
+            options.pointRadius ??= 2
             options.scales ??= {}
             options.scales.x ??= {}
             options.scales.x.grid ??= {}
-            options.scales.x.grid.color ??= gridColor
+            options.scales.x.grid.color = gridColor
             options.scales.x.grid.display ??= false
             options.scales.x.grid.drawBorder ??= false
             options.scales.y ??= {}
             options.scales.y.grid ??= {}
-            options.scales.y.grid.color ??= gridColor
+            options.scales.y.grid.color = gridColor
             options.scales.y.grid.drawBorder ??= false
 
             return new Chart(this.$refs.canvas, {
