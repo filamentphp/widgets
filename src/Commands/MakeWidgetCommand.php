@@ -6,15 +6,14 @@ use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Resources\Resource;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
+use Filament\Support\Commands\Concerns\CanValidateInput;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use function Laravel\Prompts\select;
-use function Laravel\Prompts\text;
 
 class MakeWidgetCommand extends Command
 {
     use CanManipulateFiles;
+    use CanValidateInput;
 
     protected $description = 'Create a new Filament widget class';
 
@@ -22,11 +21,7 @@ class MakeWidgetCommand extends Command
 
     public function handle(): int
     {
-        $widget = (string) str($this->argument('name') ?? text(
-            label: 'What is the widget name?',
-            placeholder: 'BlogPostsChart',
-            required: true,
-        ))
+        $widget = (string) str($this->argument('name') ?? $this->askRequired('Name (e.g. `BlogPostsChart`)', 'name'))
             ->trim('/')
             ->trim('\\')
             ->trim(' ')
@@ -40,12 +35,9 @@ class MakeWidgetCommand extends Command
         $resourceClass = null;
 
         if (class_exists(Resource::class)) {
-            $resourceInput = $this->option('resource') ?? text(
-                label: 'Would you like to create the page inside a resource?',
-                placeholder: '[Optional] BlogPostResource',
-            );
+            $resourceInput = $this->option('resource') ?? $this->ask('(Optional) Resource (e.g. `BlogPostResource`)');
 
-            if (filled($resourceInput)) {
+            if ($resourceInput !== null) {
                 $resource = (string) str($resourceInput)
                     ->studly()
                     ->trim('/')
@@ -75,54 +67,23 @@ class MakeWidgetCommand extends Command
                 $panels = Filament::getPanels();
 
                 /** @var ?Panel $panel */
-                $panel = $panels[select(
-                    label: 'Where would you like to create this?',
-                    options: array_unique([
+                $panel = $panels[$this->choice(
+                    'Where would you like to create this widget?',
+                    array_unique([
                         ...array_map(
-                            fn (Panel $panel): string => "The [{$panel->getId()}] panel",
+                            fn (Panel $panel): string => $panel->getWidgetNamespace() ?? 'App\\Filament\\Widgets',
                             $panels,
                         ),
-                        '' => '[App\\Livewire] alongside other Livewire components',
+                        '' => 'App\\Http\\Livewire' . ($widgetNamespace ? '\\' . $widgetNamespace : ''),
                     ]),
                 )] ?? null;
             }
         }
 
-        $path = null;
-        $namespace = null;
-        $resourcePath = null;
-        $resourceNamespace = null;
-
-        if (! $panel) {
-            $path = app_path('Livewire/');
-            $namespace = 'App\\Livewire';
-        } elseif ($resource === null) {
-            $widgetDirectories = $panel->getWidgetDirectories();
-            $widgetNamespaces = $panel->getWidgetNamespaces();
-
-            $namespace = (count($widgetNamespaces) > 1) ?
-                select(
-                    label: 'Which namespace would you like to create this in?',
-                    options: $widgetNamespaces,
-                ) :
-                (Arr::first($widgetNamespaces) ?? 'App\\Filament\\Widgets');
-            $path = (count($widgetDirectories) > 1) ?
-                $widgetDirectories[array_search($namespace, $widgetNamespaces)] :
-                (Arr::first($widgetDirectories) ?? app_path('Filament/Widgets/'));
-        } else {
-            $resourceDirectories = $panel->getResourceDirectories();
-            $resourceNamespaces = $panel->getResourceNamespaces();
-
-            $resourceNamespace = (count($resourceNamespaces) > 1) ?
-                select(
-                    label: 'Which namespace would you like to create this in?',
-                    options: $resourceNamespaces,
-                ) :
-                (Arr::first($resourceNamespaces) ?? 'App\\Filament\\Resources');
-            $resourcePath = (count($resourceDirectories) > 1) ?
-                $resourceDirectories[array_search($resourceNamespace, $resourceNamespaces)] :
-                (Arr::first($resourceDirectories) ?? app_path('Filament/Resources/'));
-        }
+        $path = $panel ? ($panel->getWidgetDirectory() ?? app_path('Filament/Widgets/')) : app_path('Http/Livewire/');
+        $namespace = $panel ? ($panel->getWidgetNamespace() ?? 'App\\Filament\\Widgets') : 'App\\Http\\Livewire';
+        $resourcePath = $panel ? ($panel->getResourceDirectory() ?? app_path('Filament/Resources/')) : null;
+        $resourceNamespace = $panel ? ($panel->getResourceNamespace() ?? 'App\\Filament\\Resources') : null;
 
         $view = str($widget)->prepend(
             (string) str($resource === null ? ($panel ? "{$namespace}\\" : 'livewire\\') : "{$resourceNamespace}\\{$resource}\\widgets\\")
@@ -155,9 +116,9 @@ class MakeWidgetCommand extends Command
         }
 
         if ($this->option('chart')) {
-            $chart = select(
-                label: 'Which type of chart would you like to create?',
-                options: [
+            $chart = $this->choice(
+                'Chart type',
+                [
                     'Bar chart',
                     'Bubble chart',
                     'Doughnut chart',
