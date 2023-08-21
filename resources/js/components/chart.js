@@ -1,51 +1,90 @@
 import Chart from 'chart.js/auto'
 
-Chart.defaults.font.family = `var(--filament-widgets-chart-font-family)`
-Chart.defaults.color = '#6b7280'
-
 export default function chart({ cachedData, options, type }) {
     return {
-        chart: null,
-
         init: function () {
-            let chart = this.initChart()
+            this.initChart()
 
-            this.$wire.on('updateChartData', async ({ data }) => {
-                chart.data = this.applyColorToData(data)
+            this.$wire.$on('updateChartData', ({ data }) => {
+                chart = this.getChart()
+                chart.data = data
                 chart.update('resize')
             })
 
-            this.$wire.on('filterChartData', async ({ data }) => {
-                chart.destroy()
-                chart = this.initChart(data)
+            Alpine.effect(() => {
+                Alpine.store('theme')
+
+                this.$nextTick(() => {
+                    this.getChart().destroy()
+                    this.initChart()
+                })
             })
+
+            window
+                .matchMedia('(prefers-color-scheme: dark)')
+                .addEventListener('change', () => {
+                    if (Alpine.store('theme') !== 'system') {
+                        return
+                    }
+
+                    this.$nextTick(() => {
+                        this.getChart().destroy()
+                        this.initChart()
+                    })
+                })
         },
 
         initChart: function (data = null) {
-            return (this.chart = new Chart(this.$refs.canvas, {
+            Chart.defaults.animation.duration = 0
+
+            Chart.defaults.backgroundColor = getComputedStyle(
+                this.$refs.backgroundColorElement,
+            ).color
+
+            const borderColor = getComputedStyle(
+                this.$refs.borderColorElement,
+            ).color
+
+            Chart.defaults.borderColor = borderColor
+
+            Chart.defaults.color = getComputedStyle(
+                this.$refs.textColorElement,
+            ).color
+
+            Chart.defaults.font.family = getComputedStyle(this.$el).fontFamily
+
+            Chart.defaults.plugins.legend.labels.boxWidth = 12
+            Chart.defaults.plugins.legend.position = 'bottom'
+
+            const gridColor = getComputedStyle(
+                this.$refs.gridColorElement,
+            ).color
+
+            options ??= {}
+            options.borderWidth ??= 2
+            options.pointBackgroundColor ??= borderColor
+            options.pointHitRadius ??= 4
+            options.pointRadius ??= 2
+            options.scales ??= {}
+            options.scales.x ??= {}
+            options.scales.x.grid ??= {}
+            options.scales.x.grid.color = gridColor
+            options.scales.x.grid.display ??= false
+            options.scales.x.grid.drawBorder ??= false
+            options.scales.y ??= {}
+            options.scales.y.grid ??= {}
+            options.scales.y.grid.color = gridColor
+            options.scales.y.grid.drawBorder ??= false
+
+            return new Chart(this.$refs.canvas, {
                 type: type,
-                data: this.applyColorToData(data ?? cachedData),
-                options: options ?? {},
-            }))
+                data: data ?? cachedData,
+                options: options,
+            })
         },
 
-        applyColorToData: function (data) {
-            data.datasets.forEach((dataset, datasetIndex) => {
-                if (!dataset.backgroundColor) {
-                    data.datasets[datasetIndex].backgroundColor =
-                        getComputedStyle(
-                            this.$refs.backgroundColorElement,
-                        ).color
-                }
-
-                if (!dataset.borderColor) {
-                    data.datasets[datasetIndex].borderColor = getComputedStyle(
-                        this.$refs.borderColorElement,
-                    ).color
-                }
-            })
-
-            return data
+        getChart: function () {
+            return Chart.getChart(this.$refs.canvas)
         },
     }
 }

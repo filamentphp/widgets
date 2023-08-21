@@ -16,9 +16,9 @@ abstract class ChartWidget extends Widget
 
     public string $dataChecksum;
 
-    public bool $hasFilterLoadingIndicator = true;
-
     public ?string $filter = null;
+
+    protected static string $color = 'primary';
 
     protected static ?string $heading = null;
 
@@ -102,22 +102,17 @@ abstract class ChartWidget extends Widget
         if ($newDataChecksum !== $this->dataChecksum) {
             $this->dataChecksum = $newDataChecksum;
 
-            $this->emitSelf('updateChartData', [
-                'data' => $this->getCachedData(),
-            ]);
+            $this->dispatch('updateChartData', data: $this->getCachedData());
         }
     }
 
     public function updatedFilter(): void
     {
-        $newDataChecksum = $this->generateDataChecksum();
+        $this->updateChartData();
+    }
 
-        if ($newDataChecksum !== $this->dataChecksum) {
-            $this->dataChecksum = $newDataChecksum;
-
-            $this->emitSelf('filterChartData', [
-                'data' => $this->getCachedData(),
-            ]);
-        }
+    public function getColor(): string
+    {
+        return static::$color;
     }
 }
