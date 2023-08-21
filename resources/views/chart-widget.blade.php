@@ -1,55 +1,66 @@
 @php
-    $color = $this->getColor();
     $heading = $this->getHeading();
     $description = $this->getDescription();
     $filters = $this->getFilters();
 @endphp
 
-<x-filament-widgets::widget>
-    <x-filament::section
-        :description="$description"
-        :heading="$heading"
-        class="fi-wi-chart"
-    >
-        @if ($filters)
-            <x-slot name="headerEnd">
-                <x-filament::input.wrapper
-                    inline-prefix
-                    wire:target="filter"
-                    class="-my-2"
-                >
-                    <x-filament::input.select
-                        inline-prefix
-                        wire:model.live="filter"
-                    >
-                        @foreach ($filters as $value => $label)
-                            <option value="{{ $value }}">
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </x-filament::input.select>
-                </x-filament::input.wrapper>
-            </x-slot>
+<x-filament-widgets::widget class="filament-widgets-chart-widget">
+    <x-filament::card>
+        @if ($heading || $filters)
+            <div class="flex items-center justify-between gap-8">
+                <x-filament::card.header>
+                    @if ($heading)
+                        <x-filament::card.heading>
+                            {{ $heading }}
+                        </x-filament::card.heading>
+                    @endif
+
+                    @if ($description)
+                        <x-filament::card.description>
+                            {{ $description }}
+                        </x-filament::card.description>
+                    @endif
+                </x-filament::card.header>
+
+                @if ($filters)
+                    <div class="flex items-center gap-3">
+                        @if ($hasFilterLoadingIndicator)
+                            <x-filament::loading-indicator
+                                class="h-8 w-8 text-gray-500"
+                                wire:loading
+                                wire:target="filter"
+                            />
+                        @endif
+
+                        <select
+                            class="block h-10 rounded-lg border-gray-300 text-gray-900 shadow-sm outline-none transition duration-75 focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:focus:border-primary-500"
+                            wire:model="filter"
+                            wire:loading.class="animate-pulse"
+                        >
+                            @foreach ($filters as $value => $label)
+                                <option value="{{ $value }}">
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
+            </div>
         @endif
 
         <div
-            @if ($pollingInterval = $this->getPollingInterval())
-                wire:poll.{{ $pollingInterval }}="updateChartData"
-            @endif
+            @if ($pollingInterval = $this->getPollingInterval()) wire:poll.{{ $pollingInterval }}="updateChartData" @endif
         >
             <div
+                x-ignore
                 ax-load
                 ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('chart', 'filament/widgets') }}"
-                wire:ignore
                 x-data="chart({
                             cachedData: @js($this->getCachedData()),
                             options: @js($this->getOptions()),
                             type: @js($this->getType()),
                         })"
-                x-ignore
-                @style([
-                    \Filament\Support\get_color_css_variables($color, shades: [50, 400, 500]) => $color !== 'gray',
-                ])
+                wire:ignore
             >
                 <canvas
                     x-ref="canvas"
@@ -60,34 +71,14 @@
 
                 <span
                     x-ref="backgroundColorElement"
-                    @class([
-                        match ($color) {
-                            'gray' => 'text-gray-100 dark:text-gray-800',
-                            default => 'text-custom-50 dark:text-custom-400/10',
-                        },
-                    ])
+                    class="text-gray-50 dark:text-gray-300"
                 ></span>
 
                 <span
                     x-ref="borderColorElement"
-                    @class([
-                        match ($color) {
-                            'gray' => 'text-gray-400',
-                            default => 'text-custom-500 dark:text-custom-400',
-                        },
-                    ])
-                ></span>
-
-                <span
-                    x-ref="gridColorElement"
-                    class="text-gray-200 dark:text-gray-800"
-                ></span>
-
-                <span
-                    x-ref="textColorElement"
-                    class="text-gray-500 dark:text-gray-400"
+                    class="text-gray-500 dark:text-gray-200"
                 ></span>
             </div>
         </div>
-    </x-filament::section>
+    </x-filament::card>
 </x-filament-widgets::widget>
