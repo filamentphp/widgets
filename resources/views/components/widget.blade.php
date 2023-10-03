@@ -29,7 +29,7 @@
     :lgStart="$columnStart['lg'] ?? null"
     :xlStart="$columnStart['xl'] ?? null"
     :twoXlStart="$columnStart['2xl'] ?? null"
-    :attributes="\Filament\Support\prepare_inherited_attributes($attributes)->class('fi-wi-widget')"
+    class="filament-widget"
 >
     {{ $slot }}
 </x-filament::grid.column>
