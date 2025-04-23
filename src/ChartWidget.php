@@ -2,16 +2,13 @@
 
 namespace Filament\Widgets;
 
-use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\RawJs;
 use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Attributes\Locked;
 
-abstract class ChartWidget extends Widget implements HasSchemas
+abstract class ChartWidget extends Widget
 {
     use Concerns\CanPoll;
-    use InteractsWithSchemas;
 
     /**
      * @var array<string, mixed> | null
@@ -23,30 +20,26 @@ abstract class ChartWidget extends Widget implements HasSchemas
 
     public ?string $filter = null;
 
-    protected string $color = 'primary';
+    protected static string $color = 'primary';
 
-    protected ?string $heading = null;
+    protected static ?string $heading = null;
 
-    protected ?string $description = null;
+    protected static ?string $description = null;
 
-    protected ?string $maxHeight = null;
+    protected static ?string $maxHeight = null;
 
     /**
      * @var array<string, mixed> | null
      */
-    protected ?array $options = null;
+    protected static ?array $options = null;
 
     /**
      * @var view-string
      */
-    protected string $view = 'filament-widgets::chart-widget';
+    protected static string $view = 'filament-widgets::chart-widget';
 
     public function mount(): void
     {
-        if (method_exists($this, 'getFiltersSchema')) {
-            $this->getFiltersSchema()->fill();
-        }
-
         $this->dataChecksum = $this->generateDataChecksum();
     }
 
@@ -83,17 +76,17 @@ abstract class ChartWidget extends Widget implements HasSchemas
 
     public function getHeading(): string | Htmlable | null
     {
-        return $this->heading;
+        return static::$heading;
     }
 
     public function getDescription(): string | Htmlable | null
     {
-        return $this->description;
+        return static::$description;
     }
 
     protected function getMaxHeight(): ?string
     {
-        return $this->maxHeight;
+        return static::$maxHeight;
     }
 
     /**
@@ -101,7 +94,7 @@ abstract class ChartWidget extends Widget implements HasSchemas
      */
     protected function getOptions(): array | RawJs | null
     {
-        return $this->options;
+        return static::$options;
     }
 
     public function updateChartData(): void
@@ -122,6 +115,6 @@ abstract class ChartWidget extends Widget implements HasSchemas
 
     public function getColor(): string
     {
-        return $this->color;
+        return static::$color;
     }
 }

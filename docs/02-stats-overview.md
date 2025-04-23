@@ -2,7 +2,7 @@
 title: Stats overview widgets
 ---
 
-## Introduction
+## Overview
 
 Filament comes with a "stats overview" widget template, which you can use to display a number of different stats in a single widget, without needing to write a custom view.
 
@@ -73,7 +73,7 @@ Stat::make('Unique views', '192.1k')
 
 ## Changing the color of the stat
 
-You may also give stats a [color](../styling/colors):
+You may also give stats a `color()` (`danger`, `gray`, `info`, `primary`, `success` or `warning`):
 
 ```php
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -147,13 +147,13 @@ By default, stats overview widgets refresh their data every 5 seconds.
 To customize this, you may override the `$pollingInterval` property on the class to a new interval:
 
 ```php
-protected ?string $pollingInterval = '10s';
+protected static ?string $pollingInterval = '10s';
 ```
 
 Alternatively, you may disable polling altogether:
 
 ```php
-protected ?string $pollingInterval = null;
+protected static ?string $pollingInterval = null;
 ```
 
 ## Disabling lazy loading
