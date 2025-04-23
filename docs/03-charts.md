@@ -2,7 +2,7 @@
 title: Chart widgets
 ---
 
-## Overview
+## Introduction
 
 Filament comes with many "chart" widget templates, which you can use to display real-time, interactive charts.
 
@@ -14,7 +14,7 @@ php artisan make:filament-widget BlogPostsChart --chart
 
 There is a single `ChartWidget` class that is used for all charts. The type of chart is set by the `getType()` method. In this example, that method returns the string `'line'`.
 
-The `protected static ?string $heading` variable is used to set the heading that describes the chart. If you need to set the heading dynamically, you can override the `getHeading()` method.
+The `protected ?string $heading` variable is used to set the heading that describes the chart. If you need to set the heading dynamically, you can override the `getHeading()` method.
 
 The `getData()` method is used to return an array of datasets and labels. Each dataset is a labeled array of points to plot on the chart, and each label is a string. This structure is identical to the [Chart.js](https://www.chartjs.org/docs) library, which Filament uses to render charts. You may use the [Chart.js documentation](https://www.chartjs.org/docs) to fully understand the possibilities to return from `getData()`, based on the chart type.
 
@@ -27,7 +27,7 @@ use Filament\Widgets\ChartWidget;
 
 class BlogPostsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Blog Posts';
+    protected ?string $heading = 'Blog Posts';
 
     protected function getData(): array
     {
@@ -66,10 +66,10 @@ Below is a list of available chart widget classes which you may extend, and thei
 
 ## Customizing the chart color
 
-You can customize the color of the chart data by setting the `$color` property to either `danger`, `gray`, `info`, `primary`, `success` or `warning`:
+You can customize the [color](../styling/colors) of the chart data by setting the `$color` property:
 
 ```php
-protected static string $color = 'info';
+protected string $color = 'info';
 ```
 
 If you're looking to customize the color further, or use multiple colors across multiple datasets, you can still make use of Chart.js's [color options](https://www.chartjs.org/docs/latest/general/colors.html) in the data:
@@ -165,13 +165,13 @@ By default, chart widgets refresh their data every 5 seconds.
 To customize this, you may override the `$pollingInterval` property on the class to a new interval:
 
 ```php
-protected static ?string $pollingInterval = '10s';
+protected ?string $pollingInterval = '10s';
 ```
 
 Alternatively, you may disable polling altogether:
 
 ```php
-protected static ?string $pollingInterval = null;
+protected ?string $pollingInterval = null;
 ```
 
 ## Setting a maximum chart height
@@ -179,7 +179,7 @@ protected static ?string $pollingInterval = null;
 You may place a maximum height on the chart to ensure that it doesn't get too big, using the `$maxHeight` property:
 
 ```php
-protected static ?string $maxHeight = '300px';
+protected ?string $maxHeight = '300px';
 ```
 
 ## Setting chart configuration options
@@ -187,7 +187,7 @@ protected static ?string $maxHeight = '300px';
 You may specify an `$options` variable on the chart class to control the many configuration options that the Chart.js library provides. For instance, you could turn off the [legend](https://www.chartjs.org/docs/latest/configuration/legend.html) for a line chart:
 
 ```php
-protected static ?array $options = [
+protected ?array $options = [
     'plugins' => [
         'legend' => [
             'display' => false,
@@ -318,4 +318,4 @@ FilamentAsset::register([
 ]);
 ```
 
-You can find out more about [asset registration](../support/assets), and even [register assets for a specific panel](../panels/configuration#registering-assets-for-a-panel).
+You can find out more about [asset registration](../advanced/assets), and even [register assets for a specific panel](../panel-configuration#registering-assets-for-a-panel).

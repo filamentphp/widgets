@@ -1,5 +1,6 @@
 @php
     use Filament\Support\Facades\FilamentView;
+    use Filament\Widgets\View\Components\ChartWidgetComponent;
 
     $color = $this->getColor();
     $heading = $this->getHeading();
@@ -9,24 +10,43 @@
 
 <x-filament-widgets::widget class="fi-wi-chart">
     <x-filament::section :description="$description" :heading="$heading">
-        @if ($filters)
+        @if ($filters || method_exists($this, 'getFiltersSchema'))
             <x-slot name="headerEnd">
-                <x-filament::input.wrapper
-                    inline-prefix
-                    wire:target="filter"
-                    class="w-max sm:-my-2"
-                >
-                    <x-filament::input.select
+                @if ($filters)
+                    <x-filament::input.wrapper
                         inline-prefix
-                        wire:model.live="filter"
+                        wire:target="filter"
+                        class="fi-wi-chart-filter"
                     >
-                        @foreach ($filters as $value => $label)
-                            <option value="{{ $value }}">
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </x-filament::input.select>
-                </x-filament::input.wrapper>
+                        <x-filament::input.select
+                            inline-prefix
+                            wire:model.live="filter"
+                        >
+                            @foreach ($filters as $value => $label)
+                                <option value="{{ $value }}">
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </x-filament::input.select>
+                    </x-filament::input.wrapper>
+                @endif
+
+                @if (method_exists($this, 'getFiltersSchema'))
+                    <x-filament::dropdown
+                        placement="bottom-end"
+                        shift
+                        width="xs"
+                        class="fi-wi-chart-filter"
+                    >
+                        <x-slot name="trigger">
+                            {{ $this->getFiltersTriggerAction() }}
+                        </x-slot>
+
+                        <div class="fi-wi-chart-filter-content">
+                            {{ $this->getFiltersSchema() }}
+                        </div>
+                    </x-filament::dropdown>
+                @endif
             </x-slot>
         @endif
 
@@ -49,11 +69,7 @@
                             type: @js($this->getType()),
                         })"
                 @class([
-                    match ($color) {
-                        'gray' => null,
-                        default => 'fi-color-custom',
-                    },
-                    is_string($color) ? "fi-color-{$color}" : null,
+                    ...\Filament\Support\get_component_color_classes(ChartWidgetComponent::class, $color),
                 ])
             >
                 <canvas
@@ -65,46 +81,22 @@
 
                 <span
                     x-ref="backgroundColorElement"
-                    @class([
-                        match ($color) {
-                            'gray' => 'text-gray-100 dark:text-gray-800',
-                            default => 'text-custom-50 dark:text-custom-400/10',
-                        },
-                    ])
-                    @style([
-                        \Filament\Support\get_color_css_variables(
-                            $color,
-                            shades: [50, 400],
-                            alias: 'widgets::chart-widget.background',
-                        ) => $color !== 'gray',
-                    ])
+                    class="fi-wi-chart-bg-color"
                 ></span>
 
                 <span
                     x-ref="borderColorElement"
-                    @class([
-                        match ($color) {
-                            'gray' => 'text-gray-400',
-                            default => 'text-custom-500 dark:text-custom-400',
-                        },
-                    ])
-                    @style([
-                        \Filament\Support\get_color_css_variables(
-                            $color,
-                            shades: [400, 500],
-                            alias: 'widgets::chart-widget.border',
-                        ) => $color !== 'gray',
-                    ])
+                    class="fi-wi-chart-border-color"
                 ></span>
 
                 <span
                     x-ref="gridColorElement"
-                    class="text-gray-200 dark:text-gray-800"
+                    class="fi-wi-chart-grid-color"
                 ></span>
 
                 <span
                     x-ref="textColorElement"
-                    class="text-gray-500 dark:text-gray-400"
+                    class="fi-wi-chart-text-color"
                 ></span>
             </div>
         </div>
