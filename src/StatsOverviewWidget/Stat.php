@@ -24,7 +24,10 @@ class Stat extends Component
      */
     protected ?array $chart = null;
 
-    protected ?string $chartColor = null;
+    /**
+     * @var string | array<string> | null
+     */
+    protected string | array | null $chartColor = null;
 
     protected string | BackedEnum | null $icon = null;
 
@@ -32,7 +35,10 @@ class Stat extends Component
 
     protected IconPosition | string | null $descriptionIconPosition = null;
 
-    protected ?string $descriptionColor = null;
+    /**
+     * @var string | array<string> | null
+     */
+    protected string | array | null $descriptionColor = null;
 
     /**
      * @var scalar | Htmlable | Closure
@@ -56,7 +62,10 @@ class Stat extends Component
         return app(static::class, ['label' => $label, 'value' => $value]);
     }
 
-    public function chartColor(?string $color): static
+    /**
+     * @param  string | array<string> | null  $color
+     */
+    public function chartColor(string | array | null $color): static
     {
         $this->chartColor = $color;
 
@@ -70,7 +79,10 @@ class Stat extends Component
         return $this;
     }
 
-    public function descriptionColor(?string $color): static
+    /**
+     * @param  string | array<string> | null  $color
+     */
+    public function descriptionColor(string | array | null $color): static
     {
         $this->descriptionColor = $color;
 
@@ -113,7 +125,10 @@ class Stat extends Component
         return $this->chart;
     }
 
-    public function getChartColor(): ?string
+    /**
+     * @return string | array<string> | null
+     */
+    public function getChartColor(): string | array | null
     {
         return $this->chartColor ?? $this->getColor();
     }
@@ -123,7 +138,10 @@ class Stat extends Component
         return $this->icon;
     }
 
-    public function getDescriptionColor(): ?string
+    /**
+     * @return string | array<string> | null
+     */
+    public function getDescriptionColor(): string | array | null
     {
         return $this->descriptionColor ?? $this->getColor();
     }
