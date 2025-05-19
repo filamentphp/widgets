@@ -484,7 +484,7 @@ class MakeWidgetCommand extends Command
         );
 
         $isGenerated = confirm(
-            label: 'Would you like to generate the table columns based on the attributes of the model?',
+            label: 'Should the table columns be generated from the current database columns?',
             default: false,
         );
 

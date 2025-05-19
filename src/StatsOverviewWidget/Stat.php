@@ -7,6 +7,7 @@ use Closure;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Concerns\CanOpenUrl;
 use Filament\Schemas\Components\Concerns\HasDescription;
+use Filament\Schemas\Components\Concerns\HasLabel;
 use Filament\Support\Concerns\HasColor;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Contracts\Support\Htmlable;
@@ -16,6 +17,7 @@ class Stat extends Component
     use CanOpenUrl;
     use HasColor;
     use HasDescription;
+    use HasLabel;
 
     protected string $view = 'filament-widgets::stats-overview-widget.stat';
 
