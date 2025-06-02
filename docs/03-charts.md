@@ -253,6 +253,14 @@ To disable this behavior, you may override the `$isLazy` property on the widget 
 protected static bool $isLazy = true;
 ```
 
+## Making the chart collapsible
+
+You may allow the chart to be collapsible by setting the `$isCollapsible` property on the widget class to be `true`:
+
+```php
+protected bool $isCollapsible = true;
+```
+
 ## Using custom Chart.js plugins
 
 Chart.js offers a powerful plugin system that allows you to extend its functionality and create custom chart behaviors. This guide details how to use them in a chart widget.
