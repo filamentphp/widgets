@@ -3,7 +3,7 @@ import 'chartjs-adapter-luxon'
 
 export default function chart({ cachedData, options, type }) {
     return {
-        init: function () {
+        init() {
             this.initChart()
 
             this.$wire.$on('updateChartData', ({ data }) => {
@@ -39,7 +39,7 @@ export default function chart({ cachedData, options, type }) {
                 })
         },
 
-        initChart: function (data = null) {
+        initChart(data = null) {
             if (
                 !this.$refs.canvas ||
                 !this.$refs.backgroundColorElement ||
@@ -107,7 +107,7 @@ export default function chart({ cachedData, options, type }) {
             })
         },
 
-        getChart: function () {
+        getChart() {
             if (!this.$refs.canvas) {
                 return null
             }

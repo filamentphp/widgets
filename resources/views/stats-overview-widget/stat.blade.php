@@ -59,7 +59,7 @@
 
     @if ($chart = $getChart())
         {{-- An empty function to initialize the Alpine component with until it's loaded with `x-load`. This removes the need for `x-ignore`, allowing the chart to be updated via Livewire polling. --}}
-        <div x-data="{ statsOverviewStatChart: function () {} }">
+        <div x-data="{ statsOverviewStatChart() {} }">
             <div
                 @if (FilamentView::hasSpaMode())
                     x-load="visible"

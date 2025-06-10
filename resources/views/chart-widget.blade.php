@@ -17,7 +17,7 @@
         :collapsible="$isCollapsible"
     >
         @if ($filters || method_exists($this, 'getFiltersSchema'))
-            <x-slot name="headerEnd">
+            <x-slot name="afterHeader">
                 @if ($filters)
                     <x-filament::input.wrapper
                         inline-prefix
