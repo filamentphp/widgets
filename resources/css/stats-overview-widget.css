@@ -1,5 +1,5 @@
 .fi-wi-stats-overview-stat {
-    @apply relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10;
+    @apply relative block rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10;
 
     & .fi-icon {
         @apply text-gray-400 dark:text-gray-500;
