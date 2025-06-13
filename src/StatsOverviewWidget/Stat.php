@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Concerns\HasDescription;
 use Filament\Schemas\Components\Concerns\HasLabel;
 use Filament\Support\Concerns\HasColor;
 use Filament\Support\Enums\IconPosition;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Htmlable;
 
 class Stat extends Component
@@ -100,10 +101,18 @@ class Stat extends Component
     }
 
     /**
-     * @param  array<float> | null  $chart
+     * @param  array<float> | Arrayable | null  $chart
      */
-    public function chart(?array $chart): static
+    public function chart(array | Arrayable | null $chart): static
     {
+        if (is_null($chart)) {
+            return $this;
+        }
+
+        if ($chart instanceof Arrayable) {
+            $chart = $chart->toArray();
+        }
+
         $this->chart = $chart;
 
         return $this;
