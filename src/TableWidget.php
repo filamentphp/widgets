@@ -46,7 +46,7 @@ class TableWidget extends Widget implements HasActions, HasSchemas, HasTable
                     ->beforeLast('Widget')
                     ->kebab()
                     ->replace('-', ' ')
-                    ->title(),
+                    ->ucwords(),
             )
             ->paginationMode(PaginationMode::Simple);
     }

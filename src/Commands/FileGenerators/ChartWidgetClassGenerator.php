@@ -63,7 +63,7 @@ class ChartWidgetClassGenerator extends ClassGenerator
                 ->classBasename()
                 ->kebab()
                 ->replace('-', ' ')
-                ->title(),
+                ->ucwords(),
         )
             ->setProtected()
             ->setType('?string');
