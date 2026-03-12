@@ -5,7 +5,7 @@ return [
     'actions' => [
 
         'filter' => [
-            'label' => 'Filter',
+            'label' => '筛选',
         ],
 
     ],
@@ -15,11 +15,11 @@ return [
         'actions' => [
 
             'apply' => [
-                'label' => 'Tillämpa',
+                'label' => '应用',
             ],
 
             'reset' => [
-                'label' => 'Återställ',
+                'label' => '重置',
             ],
 
         ],

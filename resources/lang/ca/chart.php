@@ -5,7 +5,7 @@ return [
     'actions' => [
 
         'filter' => [
-            'label' => 'Filter',
+            'label' => 'Filtrar',
         ],
 
     ],
@@ -15,11 +15,11 @@ return [
         'actions' => [
 
             'apply' => [
-                'label' => 'Tillämpa',
+                'label' => 'Aplicar',
             ],
 
             'reset' => [
-                'label' => 'Återställ',
+                'label' => 'Reestablir',
             ],
 
         ],
