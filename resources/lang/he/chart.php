@@ -5,13 +5,13 @@ return [
     'actions' => [
 
         'filter' => [
-            'label' => 'Filtruj',
+            'label' => 'סינון',
         ],
 
     ],
 
     'filter' => [
-        'label' => 'Filtruj dane wykresu',
+        'label' => 'סינון נתוני התרשים',
     ],
 
     'filters' => [
@@ -19,11 +19,11 @@ return [
         'actions' => [
 
             'apply' => [
-                'label' => 'Zastosuj',
+                'label' => 'החל',
             ],
 
             'reset' => [
-                'label' => 'Resetuj',
+                'label' => 'איפוס',
             ],
 
         ],
@@ -31,7 +31,7 @@ return [
     ],
 
     'empty' => [
-        'heading' => 'Brak danych do wyświetlenia',
+        'heading' => 'אין נתונים להצגה',
     ],
 
 ];
